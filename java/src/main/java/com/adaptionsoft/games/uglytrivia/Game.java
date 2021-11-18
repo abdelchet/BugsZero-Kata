@@ -3,7 +3,17 @@ package com.adaptionsoft.games.uglytrivia;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+
+/* il y a beaucoup d'amelioration à faire en terme de folder , parceque un dossier java ca vieux rien dire je parle du 1er dossier java
+* les image doivement etre dans un dossier ressources pour respecter les normes java
+* poour le gameTest je ne vois pas l'utilité d'ajouter une lib externe sachant qu'on a deja un pom maven ,
+*  et je ne vois pas non plus sont utilité dans le code un simple test Junit suffit pour verifier le resultat
+*
+* */
 public class Game {
+
+	//  c'est mieux de specifier le type
+	// vaut mieux plutot utiliser un Set à la place de List qui peut accepter les doublons
     ArrayList players = new ArrayList();
     int[] places = new int[6];
     int[] purses  = new int[6];
@@ -34,9 +44,12 @@ public class Game {
 		return (howManyPlayers() >= 2);
 	}
 
+
+	// il n'y a pas de controle dans les cas ou on essaye d'ajouter des joueuers de meme nom
+	// et il n'y a pas de controle si on essaye d'ajouter un joureur sans nom !!
+	// playerName peut etre null egalement
 	public boolean add(String playerName) {
-		
-		
+
 	    players.add(playerName);
 	    places[howManyPlayers()] = 0;
 	    purses[howManyPlayers()] = 0;
@@ -50,8 +63,15 @@ public class Game {
 	public int howManyPlayers() {
 		return players.size();
 	}
-
+	// les logs ne sont pas bien formatter et il risque d'y avoir des exceptions dans les logs ainsi qu'il faut jamais
+	// mettre des sysout dans le code vaut mieux utiliser les loggers
+	// il n'y a pas de couverture de test pour cette fonction
+	// aucun exception levée si un joueur fait une fausse manipulation
+	// il faut plutot utiliser le equals pour comparer les Strings
+	// vaut mieux utiliser des constantes au lieu de dupliquer le code
+	// pas de NPE check
 	public void roll(int roll) {
+		// pas de NullPointerException check !!!!!!!!
 		System.out.println(players.get(currentPlayer) + " is the current player");
 		System.out.println("They have rolled a " + roll);
 		
@@ -62,6 +82,7 @@ public class Game {
 				System.out.println(players.get(currentPlayer) + " is getting out of the penalty box");
 				movePlayerAndAskQuestion(roll);
 			} else {
+
 				System.out.println(players.get(currentPlayer) + " is not getting out of the penalty box");
 				isGettingOutOfPenaltyBox = false;
 				}
@@ -73,6 +94,10 @@ public class Game {
 		
 	}
 
+	// les logs ne sont pas bien formatter et il risque d'y avoir des exceptions dans les logs ainsi qu'il faut jamais
+	// mettre des sysout dans le code vaut mieux utiliser les loggers
+	// il n'y a pas de couverture de test pour cette fonction
+	// aucun exception levée si un joueur fait une fausse manipulation
 	private void movePlayerAndAskQuestion(int roll) {
 		places[currentPlayer] = places[currentPlayer] + roll;
 		if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
@@ -84,6 +109,12 @@ public class Game {
 		askQuestion();
 	}
 
+	// les logs ne sont pas bien formatter et il risque d'y avoir des exceptions dans les logs ainsi qu'il faut jamais
+	// mettre des sysout dans le code vaut mieux utiliser les loggers
+	// il n'y a pas de couverture de test pour cette fonction
+	// aucun exception levée si un joueur fait une fausse manipulation
+	// il faut plutot utiliser le equals pour comparer les Strings
+	// vaut mieux utiliser des constantes static au lieu de dupliquer le code je donne reference à ("Pop ,  Science , Sports , Rock" ...)
 	private void askQuestion() {
 		if (currentCategory() == "Pop")
 			System.out.println(popQuestions.removeFirst());
@@ -94,8 +125,9 @@ public class Game {
 		if (currentCategory() == "Rock")
 			System.out.println(rockQuestions.removeFirst());		
 	}
-	
-	
+
+	// il y a plusieurs if dans la methode vaut mieux les regrouper par retours
+	// vaut mieux utiliser des constantes static au lieu de dupliquer le code je donne reference à ("Pop ,  Science , Sports , Rock" ...)
 	private String currentCategory() {
 		if (places[currentPlayer] == 0) return "Pop";
 		if (places[currentPlayer] == 4) return "Pop";
@@ -108,7 +140,13 @@ public class Game {
 		if (places[currentPlayer] == 10) return "Sports";
 		return "Rock";
 	}
-
+	// les logs ne sont pas bien formatter et il risque d'y avoir des exceptions dans les logs ainsi qu'il faut jamais
+	// mettre des sysout dans le code vaut mieux utiliser les loggers
+	// il n'y a pas de couverture de test pour cette fonction
+	// aucun exception levée si un joueur fait une fausse manipulation
+	// il faut plutot utiliser le equals pour comparer les Strings
+	// vaut mieux utiliser des constantes au lieu de dupliquer le code
+	// pas de NPE check
 	public boolean wasCorrectlyAnswered() {
 		if (inPenaltyBox[currentPlayer]){
 			if (isGettingOutOfPenaltyBox) {
@@ -120,12 +158,14 @@ public class Game {
 						+ " now has "
 						+ purses[currentPlayer]
 						+ " Gold Coins.");
-
+				// on peut faire directement un retour sans declaré une variable temporaire ( winner )
 				boolean winner = didPlayerWin();
 
 				return winner;
 			} else {
 				currentPlayer++;
+				// pas lisbile vaut mieux ajouter des accolades
+				// repetition de ce code en bas donc il peut etre externaliser
 				if (currentPlayer == players.size()) currentPlayer = 0;
 				return true;
 			}
@@ -148,7 +188,11 @@ public class Game {
 			return winner;
 		}
 	}
-	
+	// les logs ne sont pas bien formatter et il risque d'y avoir des exceptions dans les logs ainsi qu'il faut jamais
+	// mettre des sysout dans le code vaut mieux utiliser les loggers
+	// il n'y a pas de couverture de test pour cette fonction
+	// aucun exception levée si un joueur fait une fausse manipulation
+	// NPE check
 	public boolean wrongAnswer(){
 		System.out.println("Question was incorrectly answered");
 		System.out.println(players.get(currentPlayer)+ " was sent to the penalty box");
@@ -160,6 +204,8 @@ public class Game {
 	}
 
 
+	//pour ameliorer la lisibilté vaut mieux mettre l'operateur !=
+	// il n'y a pas de couverture de test pour cette fonction
 	private boolean didPlayerWin() {
 		return !(purses[currentPlayer] == 6);
 	}

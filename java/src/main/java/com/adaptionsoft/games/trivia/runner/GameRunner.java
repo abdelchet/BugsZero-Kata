@@ -7,6 +7,7 @@ import com.adaptionsoft.games.uglytrivia.Game;
 
 public class GameRunner {
 
+	// noTAWinner  ne respecte pas le camelCase de la recommendation java pour le naming )) , et elle ne doit pas etre en static
 	private static boolean notAWinner;
 
 	public static void main(String[] args) {
